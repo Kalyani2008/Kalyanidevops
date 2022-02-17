@@ -7,7 +7,7 @@ pipeline {
 	stages {
 		stage('mavne-build'){
 			steps {
-				sh 'mvn clean package -DskipTests'
+				sh 'mvn clean package'
 				}
 			}
 		}

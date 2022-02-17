@@ -5,15 +5,15 @@ pipeline {
 		
 	}
 	stages {
-		stage('mavne-build'){
-			steps {
-				sh 'mvn clean install'
-				}
-			}
-		stage('package'){
-			steps {
-				sh 'mvn package'
-				}
-			}
-		}
+		stage('Clean and Install') {
+            steps {
+                bat 'mvn clean install'
+            }
+        }
+        stage ('Package'){
+            steps {
+                bat 'mvn package'
+             }
+        }	
+	}	
 }

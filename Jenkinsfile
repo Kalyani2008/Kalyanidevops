@@ -1,19 +1,29 @@
 pipeline {
-	agent any
-	tools {
-		maven 'maven 3.8.1'
-		
-	}
-	stages {
-		stage('Clean and Install') {
+    agent any
+    stages {
+        stage('SCM') {
             steps {
-                sh 'install - DskipTests'
+                git url: 'https://github.com/foo/bar.git'
             }
         }
-        stage ('Package'){
+        stage('build && SonarQube analysis') {
             steps {
-                sh 'mvn package'
-             }
-        }	
-	}	
+                withSonarQubeEnv('My SonarQube Server') {
+                    // Optionally use a Maven environment you've configured already
+                    withMaven(maven:'Maven 3.5') {
+                        sh 'mvn clean package sonar:sonar'
+                    }
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
 }
